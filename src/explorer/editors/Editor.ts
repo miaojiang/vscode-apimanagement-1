@@ -9,8 +9,8 @@ import * as vscode from 'vscode';
 import { DialogResponses, IActionContext, UserCancelledError } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { localize } from "../../localize";
-import { createTemporaryFile } from '../../utils/fsUtil';
-import { writeToEditor } from '../../utils/vscodeUtils';
+import { createTemporaryFile, getDefaultWorkspacePath } from '../../utils/fsUtil';
+import { addFolderToWorkspaceIfNotExists, writeToEditor } from '../../utils/vscodeUtils';
 
 // tslint:disable-next-line:no-unsafe-any
 export abstract class Editor<ContextT> implements vscode.Disposable {
@@ -49,6 +49,7 @@ export abstract class Editor<ContextT> implements vscode.Disposable {
         const data: string = await this.getData(context);
         const textEditor: vscode.TextEditor = await vscode.window.showTextDocument(document);
         await this.updateEditor(data, textEditor);
+        addFolderToWorkspaceIfNotExists(getDefaultWorkspacePath());
     }
 
     public async updateMatchingContext(doc: vscode.Uri): Promise<void> {
